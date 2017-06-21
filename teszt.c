@@ -1,65 +1,99 @@
 #include <stdio.h>
 
-/* Pokemon database!
- * You should store the following data in a structure
- *  - the name of the pokemon (which is shorter than 256 characters)
- *  - the age of the pokemon (in years)
- *  - the strength of the pokemon (between 0.0-10.0)
- *  - the speed of the pokemon (between 0.0-10.0)
- *  - the type of the pokemon (as a custom type, see below)
- *
- * You should store the pokemon type in an enumeration
- * the valid types are:
- *  - normal
- *  - fire
- *  - water
- *  - electric
- *  - grass
- *  - ice
- *  - fighting
- *  - poision
- *  - ground
- *  - flying
- *  - psychic
- *  - bug
- *  - rock
- *  - ghost
- *  - dragon
- *  - dark
- *  - steel
- *  - fairy
- *
- * The "pokemon"-s are stored in an array.
- *
- * Write the following functions:
- * 1) Get faster pokemons than
- *      - parameters:
- *          - array
- *          - array length
- *          - speed
- *      - it returns the count of the faster pokemons than the parameter "speed"
- * 2) Get type count
- *      - parameters:
- *          - array
- *          - array length
- *          - type
- *      - it returns the count of pokemons which are "type"
- * 3) Get strongest type
- *      - parameters:
- *          - array
- *          - array length
- *          - strength
- *      - it returns the type of the strongest pokemon
- * 4) Get maximal strength of a type
- *      - parameters:
- *          - array
- *          - array length
- *          - type
- *      - it returns the highest strength among the "type" type pokemons
- *
- * Don't forget to handle invalid inputs (NULL pointers, invalid values etc.)
- */
+enum type{normal, fire, water, electric, grass, ice, fighting, poision, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy};
 
-int main() {
-    return 0;
+typedef struct {
+	char name[256];
+	int age; //in years
+	double strength; //0.0-10.0
+	double speed; //0.0-10.0
+	enum type typ;
+}pokemon;
+
+int faster(pokemon *array, int arraylength, double speed)
+{
+	int db=0;
+	int i;
+	for(i=0; i<arraylength; i++)
+	{
+		if(array[i].speed > speed)
+		{
+			db++;
+		}
+	}
+	return db;
 }
+
+int type(pokemon *array, int arraylength, enum type typ)
+{
+	int db=0;
+	int i;
+	for(i=0; i<arraylength; i++)
+	{
+		if(array[i].typ == typ)
+		{
+			db++;
+		}
+	}
+	return db;
+}
+
+enum type strongest_type(pokemon *array, int arraylength, double strength)
+{
+	enum type act;
+	pokemon strongest=array[0];
+	int i;
+	for(i=0; i<arraylength; i++)
+	{
+		if(strongest.strength < array[i].strength)
+		{
+			strongest=array[i];
+		}
+	}
+	return strongest.typ;
+}
+
+double maximal_strength(pokemon *array, int arraylength, enum type typ)
+{
+	int i, n = 0;
+	pokemon act[100];
+	double max=array[0].strength;
+	for(i=0; i<arraylength; i++)
+	{
+		if(array[i].typ == typ)
+		{
+			act[n] = array[i];
+			n++;
+		}
+	}
+	for(i=0; i<n; i++)
+	{
+		if(max < act[i].strength)
+		{
+			max = act[i].strength;
+		}
+	}
+	return max;
+}
+
+int main(void)
+{
+	pokemon squartle={"squartle", 34, 3.4, 5.6, water};
+	pokemon dragon={"dragon", 23, 6.7, 2.3, fire};
+	pokemon picatcu={"picatcu", 2, 8.9, 6.7, electric};
+	pokemon dragi={"dragi", 3, 6.5, 9.9, electric};
+
+	pokemon array[4];
+	array[0]=squartle;
+	array[1]=dragon;
+	array[2]=dragi;
+	array[3]=picatcu;
+	printf("%d\n", faster(array, 4, 2.0));
+	printf("%d\n", type(array, 4, electric));
+	printf("%f\n", maximal_strength(array, 4, electric));
+	printf("%d\n", strongest_type(array, 4, 5.6));
+
+	return 0;
+}
+
+
